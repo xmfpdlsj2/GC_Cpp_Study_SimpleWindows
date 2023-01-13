@@ -26,12 +26,36 @@ namespace solitaire
 	}
 	bool Card::CheckClicked(unsigned int x, unsigned int y)
 	{
-		if (x >= mX && x <= mX + mFront->GetWidth() &&
-			y >= mY && y <= mY + mFront->GetHeight())
+		//// Origin version
+		//if (x >= mX && x <= mX + mFront->GetWidth() &&
+		//	y >= mY && y <= mY + mFront->GetHeight())
+		//{
+		//	Flip(!mIsFront);
+		//	return true;
+		//}
+		
+		//// Win32 Api
+		//RECT winRct{ static_cast<LONG>(mX), static_cast<LONG>(mY),
+		//	static_cast<LONG>(mX + mFront->GetWidth()),
+		//	static_cast<LONG>(mY + mFront->GetHeight()) };
+		//POINT winPt{ x, y };
+		//if (PtInRect(&winRct, winPt))
+		//{
+		//	Flip(!mIsFront);
+		//	return true;
+		//}
+
+		// GDI+ version
+		Gdiplus::Rect gpRct{ static_cast<int>(mX),
+			static_cast<int>(mY),
+			static_cast<int>(mFront->GetWidth()),
+			static_cast<int>(mFront->GetHeight()) };
+		if (gpRct.Contains(x, y))
 		{
 			Flip(!mIsFront);
 			return true;
 		}
+
 		return false;
 	}
 	void Card::Flip(bool isFront)

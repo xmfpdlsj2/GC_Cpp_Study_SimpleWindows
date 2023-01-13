@@ -8,7 +8,7 @@ namespace solitaire
 	{
 		// 40Àå - ABC °¢°¢ Â¦¼ö
 		std::vector<Type> types;
-		while (types.size() < static_cast<size_t>(BOARD_ROW * BOARD_COLUM))
+		while (types.size() < static_cast<size_t>(BOARD_ROW * BOARD_COLUMN))
 		{
 			int mod = types.size() % 6;
 			switch (mod)
@@ -38,7 +38,7 @@ namespace solitaire
 
 		int posX{ 15 }, posY{ 15 };
 		int index{};
-		for (int x = 0; x < BOARD_COLUM; x++)
+		for (int x = 0; x < BOARD_COLUMN; x++)
 		{
 			posY = 15;
 			for (int y = 0; y < BOARD_ROW; y++)
@@ -98,9 +98,9 @@ namespace solitaire
 		{
 			mFlipCount++;
 			RECT rct = { static_cast<LONG>(COUNT_RECT.GetLeft()),
-			static_cast<LONG>(COUNT_RECT.GetRight()) ,
-			static_cast<LONG>(COUNT_RECT.GetTop()) ,
-			static_cast<LONG>(COUNT_RECT.GetBottom()) };
+				static_cast<LONG>(COUNT_RECT.GetTop()),
+				static_cast<LONG>(COUNT_RECT.GetRight()),
+				static_cast<LONG>(COUNT_RECT.GetBottom()) };
 			InvalidateRect(mHwnd, &rct, false);
 		}
 
