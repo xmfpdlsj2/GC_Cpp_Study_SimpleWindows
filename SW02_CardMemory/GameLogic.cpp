@@ -102,41 +102,47 @@ namespace solitaire
 				static_cast<LONG>(COUNT_RECT.GetRight()),
 				static_cast<LONG>(COUNT_RECT.GetBottom()) };
 			InvalidateRect(mHwnd, &rct, false);
-		}
-
-		if (mpSelectedCard == nullptr )
-		{
-			mpSelectedCard = pCard;
-		}
-		else if (pCard)
-		{
-			if (pCard->GetType() == mpSelectedCard->GetType())
+			
+			if (mpSelectedCard == nullptr)
 			{
-				pCard->Invalidate();
-				mpSelectedCard->Invalidate();
-
-				mDeck.remove_if([&](Card& card)->bool
-					{
-						return card.GetIndex() == mpSelectedCard->GetIndex();
-					});
-				mDeck.remove_if([&](Card& card)->bool
-					{
-						return card.GetIndex() == pCard->GetIndex();
-					});
-
+				mpSelectedCard = pCard;
+			}
+			else if (mpSelectedCard == pCard)
+			{
 				mpSelectedCard = nullptr;
 			}
 			else
 			{
-				pCard->Invalidate();
-				UpdateWindow(mHwnd);
+				if (pCard->GetType() == mpSelectedCard->GetType())
+				{
+					UpdateWindow(mHwnd);
+					Sleep(500);
 
-				Sleep(500);
+					pCard->Invalidate();
+					mpSelectedCard->Invalidate();
 
-				pCard->Flip(false);
-				mpSelectedCard->Flip(false);
+					mDeck.remove_if([&](Card& card)->bool
+						{
+							return card.GetIndex() == mpSelectedCard->GetIndex();
+						});
+					mDeck.remove_if([&](Card& card)->bool
+						{
+							return card.GetIndex() == pCard->GetIndex();
+						});
 
-				mpSelectedCard = nullptr;
+
+					mpSelectedCard = nullptr;
+				}
+				else
+				{
+					UpdateWindow(mHwnd);
+					Sleep(500);
+
+					pCard->Flip(false);
+					mpSelectedCard->Flip(false);
+
+					mpSelectedCard = nullptr;
+				}
 			}
 		}
 	}
