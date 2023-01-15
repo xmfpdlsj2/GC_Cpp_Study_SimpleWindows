@@ -36,17 +36,42 @@ namespace solitaire
 		std::mt19937 gen(rd());
 		std::shuffle(types.begin(), types.end(), gen);
 
-		int posX{ 15 }, posY{ 15 };
+		int posX{ 15 }, posY{ 10 };
 		int index{};
 		for (int x = 0; x < BOARD_COLUMN; x++)
 		{
-			posY = 15;
+			posY = 10;
 			for (int y = 0; y < BOARD_ROW; y++)
 			{
 				mDeck.push_back(Card(types[index++], posX, posY, mHwnd, index));
 				posY += 150;
 			}
 			posX += 110;
+		}
+	}
+	void GameLogic::GameClear()
+	{
+		int msgBoxId = MessageBox(NULL,
+			L"축하합니다! 다음 라운드를 플레이 하시겠습니까? 아니라면 종료합니다.",
+			L"Game Clear!",
+			MB_YESNO);
+
+		switch (msgBoxId)
+		{
+			case IDYES:
+			{
+				CreateCards();
+				RECT rct = {};
+				GetClientRect(mHwnd, &rct);
+				InvalidateRect(mHwnd, &rct, false);
+
+				PostMessageA(mHwnd, WM_PAINT, 0, 0);
+			}
+				break;
+			case IDNO:
+			default:
+				PostMessageA(mHwnd, WM_CLOSE, 0, 0);
+				break;
 		}
 	}
 	void GameLogic::Initialize(HWND hwnd)
@@ -130,8 +155,13 @@ namespace solitaire
 							return card.GetIndex() == pCard->GetIndex();
 						});
 
-
 					mpSelectedCard = nullptr;
+
+					if (mDeck.empty())
+					{
+						mFlipCount = 0;
+						GameClear();
+					}
 				}
 				else
 				{

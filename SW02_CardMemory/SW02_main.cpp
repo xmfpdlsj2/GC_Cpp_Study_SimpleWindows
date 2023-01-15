@@ -39,12 +39,12 @@ int WINAPI WinMain(
 	}
 
 	RECT wr{ 0, 0, 1024, 768 };
-	AdjustWindowRect(&wr, WS_OVERLAPPED | WS_SYSMENU, FALSE);
+	AdjustWindowRect(&wr, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION, FALSE);
 	hwnd = CreateWindowEx(
 		NULL,
 		gClassName.c_str(),
 		L"Card Memory Game",
-		WS_OVERLAPPED | WS_SYSMENU,
+		WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION,
 		CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
 		NULL,
 		NULL,

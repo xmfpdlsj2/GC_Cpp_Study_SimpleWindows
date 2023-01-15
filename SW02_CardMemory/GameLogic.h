@@ -6,7 +6,7 @@ namespace solitaire
 {
 	class GameLogic
 	{
-		const int BOARD_ROW{ 5 }, BOARD_COLUMN{ 8 };
+		const int BOARD_ROW{ 1 }, BOARD_COLUMN{ 8 };
 		const Gdiplus::RectF COUNT_RECT{ 885.0f, 60.0f, 120.f, 30.0f };
 
 	private:
@@ -20,6 +20,7 @@ namespace solitaire
 		
 	private:
 		void CreateCards();
+		void GameClear();
 
 	public:
 		void Initialize(HWND hwnd);
