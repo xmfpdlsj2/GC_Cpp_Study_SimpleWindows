@@ -99,6 +99,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 			break;
 		case WM_LBUTTONUP:
 			gLogic.OnClick(LOWORD(lParam), HIWORD(lParam));
+
 			break;
 		case WM_CLOSE:
 			DestroyWindow(hwnd);

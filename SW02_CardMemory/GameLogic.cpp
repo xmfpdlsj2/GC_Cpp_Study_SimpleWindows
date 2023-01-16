@@ -6,9 +6,9 @@ namespace solitaire
 {
 	void GameLogic::CreateCards()
 	{
-		// 40장 - ABC 각각 짝수
+		int row{ BOARD_ROW + mStageCount }, column{ BOARD_COLUMN + mStageCount };
 		std::vector<Type> types;
-		while (types.size() < static_cast<size_t>(BOARD_ROW * BOARD_COLUMN))
+		while (types.size() < static_cast<size_t>(row * column))
 		{
 			int mod = types.size() % 6;
 			switch (mod)
@@ -38,10 +38,10 @@ namespace solitaire
 
 		int posX{ 15 }, posY{ 10 };
 		int index{};
-		for (int x = 0; x < BOARD_COLUMN; x++)
+		for (int x = 0; x < column; x++)
 		{
 			posY = 10;
-			for (int y = 0; y < BOARD_ROW; y++)
+			for (int y = 0; y < row; y++)
 			{
 				mDeck.push_back(Card(types[index++], posX, posY, mHwnd, index));
 				posY += 150;
@@ -51,6 +51,16 @@ namespace solitaire
 	}
 	void GameLogic::GameClear()
 	{
+		if (mStageCount == MAX_ROUND)
+		{
+			MessageBox(NULL,
+				L"축하합니다! 마지막 라운드를 클리어했습니다.",
+				L"Game Clear!",
+				MB_OK);
+			PostMessageA(mHwnd, WM_CLOSE, 0, 0);
+			return;
+		}
+
 		int msgBoxId = MessageBox(NULL,
 			L"축하합니다! 다음 라운드를 플레이 하시겠습니까? 아니라면 종료합니다.",
 			L"Game Clear!",
@@ -60,7 +70,9 @@ namespace solitaire
 		{
 			case IDYES:
 			{
+				mStageCount++;
 				CreateCards();
+
 				RECT rct = {};
 				GetClientRect(mHwnd, &rct);
 				InvalidateRect(mHwnd, &rct, false);
@@ -94,14 +106,16 @@ namespace solitaire
 		{
 			card.Draw(graphics);
 		}
-		Gdiplus::PointF pos(895.0f, 20.0f);
+		Gdiplus::PointF pos(885.0f, 16.0f);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(255, 79, 64));
 		Gdiplus::Font font(L"맑은 고딕", 20);
-		graphics.DrawString(L"클릭수: ", -1, &font, pos, &brush);
+		std::wostringstream oss{};
+		oss << "Stage: " << mStageCount << L"\n클릭수: ";
+		graphics.DrawString(oss.str().c_str(), -1, &font, pos, &brush);
 
 		Gdiplus::StringFormat format;
-		format.SetAlignment(Gdiplus::StringAlignmentCenter);
-		format.SetLineAlignment(Gdiplus::StringAlignmentCenter);
+		format.SetAlignment(Gdiplus::StringAlignmentFar);
+		format.SetLineAlignment(Gdiplus::StringAlignmentFar);
 
 		graphics.DrawString(std::to_wstring(mFlipCount).c_str(), -1,
 			&font, COUNT_RECT, &format, &brush);

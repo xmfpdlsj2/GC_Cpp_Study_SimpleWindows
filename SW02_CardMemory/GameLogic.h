@@ -6,12 +6,13 @@ namespace solitaire
 {
 	class GameLogic
 	{
-		const int BOARD_ROW{ 1 }, BOARD_COLUMN{ 8 };
-		const Gdiplus::RectF COUNT_RECT{ 885.0f, 60.0f, 120.f, 30.0f };
+		const int BOARD_ROW{ 2 }, BOARD_COLUMN{ 5 }, MAX_ROUND{ 3 };
+		const Gdiplus::RectF COUNT_RECT{ 885.0f, 60.0f, 130.f, 30.0f };
 
 	private:
 		std::unique_ptr<Gdiplus::Image> mBackground;
 		std::list<Card> mDeck;
+		int mStageCount{};
 		int mFlipCount{};
 
 		Card* mpSelectedCard{};
