@@ -118,8 +118,21 @@ namespace solitaire
 		format.SetLineAlignment(Gdiplus::StringAlignmentFar);
 
 		graphics.DrawString(std::to_wstring(mFlipCount).c_str(), -1,
-			&font, COUNT_RECT, &format, &brush);
+			&font, COUNT_RECT_P1, &format, &brush);
+		
 
+		Gdiplus::PointF pos2(885.0f, 106.0f);
+		Gdiplus::SolidBrush brush2(Gdiplus::Color(255, 255, 64));
+		Gdiplus::Font font2(L"¸¼Àº °íµñ", 20);
+		std::wostringstream oss2{};
+		oss2 << "Stage: " << mStageCount << L"\nÅ¬¸¯¼ö: ";
+		graphics.DrawString(oss2.str().c_str(), -1, &font2, pos2, &brush2);
+
+		Gdiplus::StringFormat format2;
+		format2.SetAlignment(Gdiplus::StringAlignmentFar);
+		format2.SetLineAlignment(Gdiplus::StringAlignmentFar);
+		graphics.DrawString(std::to_wstring(mFlipCount).c_str(), -1,
+			&font, COUNT_RECT_P2, &format2, &brush);
 	}
 	void GameLogic::OnClick(int x, int y)
 	{
@@ -136,10 +149,10 @@ namespace solitaire
 		if (pCard)
 		{
 			mFlipCount++;
-			RECT rct = { static_cast<LONG>(COUNT_RECT.GetLeft()),
-				static_cast<LONG>(COUNT_RECT.GetTop()),
-				static_cast<LONG>(COUNT_RECT.GetRight()),
-				static_cast<LONG>(COUNT_RECT.GetBottom()) };
+			RECT rct = { static_cast<LONG>(COUNT_RECT_P1.GetLeft()),
+				static_cast<LONG>(COUNT_RECT_P1.GetTop()),
+				static_cast<LONG>(COUNT_RECT_P1.GetRight()),
+				static_cast<LONG>(COUNT_RECT_P1.GetBottom()) };
 			InvalidateRect(mHwnd, &rct, false);
 			
 			if (mpSelectedCard == nullptr)

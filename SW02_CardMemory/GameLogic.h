@@ -7,7 +7,8 @@ namespace solitaire
 	class GameLogic
 	{
 		const int BOARD_ROW{ 2 }, BOARD_COLUMN{ 5 }, MAX_ROUND{ 3 };
-		const Gdiplus::RectF COUNT_RECT{ 885.0f, 60.0f, 130.f, 30.0f };
+		const Gdiplus::RectF COUNT_RECT_P1{ 885.0f, 60.0f, 130.f, 30.0f };
+		const Gdiplus::RectF COUNT_RECT_P2{ 885.0f, 100.0f, 130.f, 30.0f };
 
 	private:
 		std::unique_ptr<Gdiplus::Image> mBackground;
