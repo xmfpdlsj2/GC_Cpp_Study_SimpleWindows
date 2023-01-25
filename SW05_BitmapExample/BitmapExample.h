@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <cmath>
 #include "D2DFramework.h"
 
 // 가상의 그래픽 카드 (Framebuffer 1024 x 764)
@@ -22,5 +23,10 @@ public:
 	void Render() override;
 
 	void PresentBuffer();
+	void ClearBuffer(D2D1::ColorF color);
+	void DrawPixelToBuffer(int x, int y, D2D1::ColorF color);
+	void FillRectToBuffer(int left, int top, int width, int height, D2D1::ColorF color);
+	void DrawCircleToBuffer(int x, int y, int r, D2D1::ColorF color);
+	void DrawLineToBuffer(int x1, int y1, int x2, int y2, D2D1::ColorF color);
 };
 
