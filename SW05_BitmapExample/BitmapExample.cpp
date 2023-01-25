@@ -24,13 +24,13 @@ void BitmapExample::Render()
 	mspRenderTarget->BeginDraw();
 	mspRenderTarget->Clear(D2D1::ColorF(0.0f, 0.2f, 0.4f));
 
-	ClearBuffer(D2D1::ColorF::HotPink);
+	ClearBuffer(D2D1::ColorF::Black);
 
 	//DrawPixelToBuffer(100, 100, D2D1::ColorF::Black);
 	//FillRectToBuffer(0, 0, 100, 100, D2D1::ColorF::ForestGreen);
 	//FillRectToBuffer(50, 50, 100, 100, D2D1::ColorF(D2D1::ColorF::CornflowerBlue, 0.5f));
 
-	DrawCircleToBuffer(200, 500, 100, D2D1::ColorF::CornflowerBlue);
+	DrawCircleToBuffer(200, 500, 100, D2D1::ColorF::Red);
 
 	PresentBuffer();
 	mspRenderTarget->DrawBitmap(mspFrameBitmap.Get());
@@ -97,17 +97,52 @@ void BitmapExample::DrawCircleToBuffer(int x, int y, int r, D2D1::ColorF color)
 		top = 0;
 	}
 
-	for (int i = 0; i < (2 * r); i++)
+	//// 원을 채우는 방식. 원의 방정식
+	//for (int i = 0; i < (2 * r); i++)
+	//{
+	//	for (int j = 0; j < (2 * r); j++)
+	//	{
+	//		int a = left + i;
+	//		int b = top + j;
+	//		if ((std::pow((a - x), 2) + std::pow((b - y), 2)) <= std::pow(r, 2))
+	//		{
+	//			DrawPixelToBuffer(a, b, color);
+	//		}
+	//	}
+	//}
+
+	//// 원만 그리는 방식. 원의 방정식
+	//for (int i = 0; i < (2 * r); i++)
+	//{
+	//	int aX = left + i;
+	//	double yPos = std::sqrt(std::pow(r, 2) - std::pow((aX - x), 2)) + y;
+	//	int aY = static_cast<int>(std::round(yPos)); // 반올림
+
+	//	DrawPixelToBuffer(aX, aY, color);
+	//	DrawPixelToBuffer(aX, y - (aY - y), color); // 좌표상 대칭되는 점
+
+	//	for (int j = 0; j < (2 * r); j++)
+	//	{
+	//		int bY = top + j;
+	//		double xPos = std::sqrt(std::pow(r, 2) - std::pow((bY - y), 2)) + x;
+	//		int bX = static_cast<int>(std::round(xPos));
+
+	//		DrawPixelToBuffer(bX, bY,  color);
+	//		DrawPixelToBuffer(x - (bX - x), bY, color);
+	//	}
+	//}
+
+	// 삼각수를 사용한 방식
+	int degree{ 360 };
+	float PI{ 3.141592 };
+
+	for (int k = 0; k < degree; k++)
 	{
-		for (int j = 0; j < (2 * r); j++)
-		{
-			int a = left + i;
-			int b = top + j;
-			if ((std::pow((a - x), 2) + std::pow((b - y), 2)) <= std::pow(r, 2))
-			{
-				DrawPixelToBuffer(left + i, top + j, color);
-			}
-		}
+		auto rX = std::cos(k * (PI / 180)) * r;
+		auto rY = std::sin(k * (PI / 180)) * r;
+		int a = static_cast<int>(std::round(rX));
+		int b = static_cast<int>(std::round(rY));
+		DrawPixelToBuffer(a + x, b + y, color);
 	}
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <cmath>
+#include <numbers>
 #include "D2DFramework.h"
 
 // 가상의 그래픽 카드 (Framebuffer 1024 x 764)
