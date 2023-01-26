@@ -30,7 +30,11 @@ void BitmapExample::Render()
 	//FillRectToBuffer(0, 0, 100, 100, D2D1::ColorF::ForestGreen);
 	//FillRectToBuffer(50, 50, 100, 100, D2D1::ColorF(D2D1::ColorF::CornflowerBlue, 0.5f));
 
-	DrawCircleToBuffer(200, 500, 100, D2D1::ColorF::Red);
+	//DrawCircleToBuffer(200, 500, 100, D2D1::ColorF::Red);
+	DrawLineToBuffer(10, 120, 10, 310, D2D1::ColorF::Red);
+	DrawLineToBuffer(100, 235, 100, 110, D2D1::ColorF::Red);
+	DrawLineToBuffer(210, 110, 10, 110, D2D1::ColorF::Red);
+	DrawLineToBuffer(120, 210, 310, 210, D2D1::ColorF::Red);
 
 	PresentBuffer();
 	mspRenderTarget->DrawBitmap(mspFrameBitmap.Get());
@@ -148,5 +152,41 @@ void BitmapExample::DrawCircleToBuffer(int x, int y, int r, D2D1::ColorF color)
 
 void BitmapExample::DrawLineToBuffer(int x1, int y1, int x2, int y2, D2D1::ColorF color)
 {
+	int xL{}, xR{}, yL{}, yR{};
 
+	if (x1 < x2)
+	{
+		xL = x1;
+		xR = x2;
+		yL = y1;
+		yR = y2;
+	}
+	else if (x1 > x2)
+	{
+		xL = x2;
+		xR = x1;
+		yL = y2;
+		yR = y1;
+	}
+	else
+	{
+		xL = x1;
+		xR = x2;
+		yL = y1 < y2 ? y1 : y2;
+		yR = y1 < y2 ? y2 : y1;
+	}
+
+	float t = static_cast<float>(yR - yL) / (xR - xL);
+
+	for (int i = 0; i < (xR - xL); i++)
+	{
+		int y = static_cast<int>(std::round(t * i + yL));
+		DrawPixelToBuffer((xL + i), y, color);
+	}
+
+	for (int j = 0; j < (yR - yL); j++)
+	{
+		int x = static_cast<int>(std::round(j / t + xL));
+		DrawPixelToBuffer(x, (yL + j), color);
+	}
 }
