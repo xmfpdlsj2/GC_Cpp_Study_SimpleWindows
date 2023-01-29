@@ -1,6 +1,7 @@
 #include <fstream>
 #include <random>
 #include "ImageExample.h"
+#include <iostream>
 
 #pragma comment(lib, "WindowsCodecs.lib")
 
@@ -62,7 +63,6 @@ void ImageExample::Render()
 	}
 
 	mspRenderTarget->DrawBitmap(mspBM_charc.Get(), mCharcRect);
-
 
 	mspRenderTarget->EndDraw();
 }

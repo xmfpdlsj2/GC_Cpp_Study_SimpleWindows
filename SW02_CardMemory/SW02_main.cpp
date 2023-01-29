@@ -38,7 +38,7 @@ int WINAPI WinMain(
 		return 0;
 	}
 
-	RECT wr{ 0, 0, 1024, 768 };
+	RECT wr{ 0, 0, 1034, 768 };
 	AdjustWindowRect(&wr, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION, FALSE);
 	hwnd = CreateWindowEx(
 		NULL,

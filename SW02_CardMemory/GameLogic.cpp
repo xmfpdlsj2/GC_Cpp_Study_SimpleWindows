@@ -73,9 +73,7 @@ namespace solitaire
 				mStageCount++;
 				CreateCards();
 
-				RECT rct = {};
-				GetClientRect(mHwnd, &rct);
-				InvalidateRect(mHwnd, &rct, false);
+				InvalidateRect(mHwnd, &mClientRect, false);
 
 				PostMessageA(mHwnd, WM_PAINT, 0, 0);
 			}
@@ -90,6 +88,7 @@ namespace solitaire
 	{
 		mHwnd = hwnd;
 		mBackground = std::make_unique<Gdiplus::Image>(L"Data/bg_blank.png");
+		GetClientRect(mHwnd, &mClientRect);
 		CreateCards();
 	}
 	void GameLogic::Release()
@@ -99,40 +98,37 @@ namespace solitaire
 	}
 	void GameLogic::Draw(Gdiplus::Graphics& graphics)
 	{
-		graphics.DrawImage(mBackground.get(), 0, 0, 
-			mBackground->GetWidth(), mBackground->GetHeight());
+		graphics.DrawImage(mBackground.get(), 0, 0,
+			static_cast<INT>(mClientRect.right), static_cast<INT>(mClientRect.bottom));
 
 		for (auto& card : mDeck)
 		{
 			card.Draw(graphics);
 		}
-		Gdiplus::PointF pos(885.0f, 16.0f);
-		Gdiplus::SolidBrush brush(Gdiplus::Color(255, 79, 64));
+
+
+		Gdiplus::SolidBrush brush(Gdiplus::Color(200, 200, 200));
 		Gdiplus::Font font(L"¸¼Àº °íµñ", 20);
-		std::wostringstream oss{};
-		oss << "Stage: " << mStageCount << L"\nÅ¬¸¯¼ö: ";
-		graphics.DrawString(oss.str().c_str(), -1, &font, pos, &brush);
-
 		Gdiplus::StringFormat format;
-		format.SetAlignment(Gdiplus::StringAlignmentFar);
-		format.SetLineAlignment(Gdiplus::StringAlignmentFar);
+		format.SetAlignment(Gdiplus::StringAlignmentNear);
+		format.SetLineAlignment(Gdiplus::StringAlignmentCenter);
 
-		graphics.DrawString(std::to_wstring(mFlipCount).c_str(), -1,
-			&font, COUNT_RECT_P1, &format, &brush);
+		brush.SetColor(Gdiplus::Color(255, 255, 64));
+		std::wostringstream ossS{};
+		ossS << "Stage " << mStageCount;
+		Gdiplus::PointF pos{ COUNT_RECT_P1.X, 20 };
+		graphics.DrawString(ossS.str().c_str(), -1, &font, pos, &brush);
+
 		
+		brush.SetColor(Gdiplus::Color(200, 200, 200));
+		std::wostringstream oss{};
+		oss << "Player1" << L"\nÅ¬¸¯¼ö:" << mFlipCount;
+		graphics.DrawString(oss.str().c_str(), -1, &font, COUNT_RECT_P1, &format, &brush);
 
-		Gdiplus::PointF pos2(885.0f, 106.0f);
-		Gdiplus::SolidBrush brush2(Gdiplus::Color(255, 255, 64));
-		Gdiplus::Font font2(L"¸¼Àº °íµñ", 20);
+		brush.SetColor(Gdiplus::Color(200, 200, 200));
 		std::wostringstream oss2{};
-		oss2 << "Stage: " << mStageCount << L"\nÅ¬¸¯¼ö: ";
-		graphics.DrawString(oss2.str().c_str(), -1, &font2, pos2, &brush2);
-
-		Gdiplus::StringFormat format2;
-		format2.SetAlignment(Gdiplus::StringAlignmentFar);
-		format2.SetLineAlignment(Gdiplus::StringAlignmentFar);
-		graphics.DrawString(std::to_wstring(mFlipCount).c_str(), -1,
-			&font, COUNT_RECT_P2, &format2, &brush);
+		oss2 << "Player2" << L"\nÅ¬¸¯¼ö:" << mFlipCount;;
+		graphics.DrawString(oss2.str().c_str(), -1, &font, COUNT_RECT_P2, &format, &brush);
 	}
 	void GameLogic::OnClick(int x, int y)
 	{
