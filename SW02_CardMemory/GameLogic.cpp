@@ -85,7 +85,7 @@ namespace solitaire
 
 		p = mIsPlayer1 ? 1 : 2;
 		oss << L"이어서 다음 라운드를 플레이 하시겠습니까? 아니라면 종료합니다.\n\n선은 계속해서: "
-			<< L"Player " << p;
+			<< "Player " << p;
 		int msgBoxId = MessageBox(NULL, oss.str().c_str(), L"Game Clear!", MB_YESNO);
 
 		switch (msgBoxId)
