@@ -1,0 +1,89 @@
+#include "BitmapManager.h"
+
+#pragma comment (lib, "WindowsCodecs.lib")
+
+using namespace std;
+using namespace Microsoft::WRL;
+
+HRESULT BitmapManager::LoadWICBitmap(std::wstring filename, ID2D1Bitmap** ppBitmap)
+{
+	HRESULT hr;
+
+	// 1. 디코더 생성 (Decoder)
+	Microsoft::WRL::ComPtr<IWICBitmapDecoder> decoder;
+	hr = mspWICFactory->CreateDecoderFromFilename(
+		filename.c_str(),
+		nullptr,
+		GENERIC_READ,
+		WICDecodeMetadataCacheOnLoad,
+		decoder.GetAddressOf()
+	);
+	ThrowIfFailed(hr);
+
+	// 2. 디코더에서 프레임 획득 (BMP파일 - 0번 프레임)
+	Microsoft::WRL::ComPtr<IWICBitmapFrameDecode> frame;
+	hr = decoder->GetFrame(0, frame.GetAddressOf());
+	ThrowIfFailed(hr);
+
+	// 3. 컨버터로 프레임에서 픽셀 배열을 구해와야 함
+	Microsoft::WRL::ComPtr<IWICFormatConverter> converter;
+	hr = mspWICFactory->CreateFormatConverter(converter.GetAddressOf());
+	ThrowIfFailed(hr);
+
+	converter->Initialize(
+		frame.Get(),
+		GUID_WICPixelFormat32bppPBGRA,
+		WICBitmapDitherTypeNone,
+		nullptr,
+		0,
+		WICBitmapPaletteTypeCustom
+	);
+	ThrowIfFailed(hr);
+
+	// 4.픽셀배열로 비트맵 생성
+	hr = mpRenderTarget->CreateBitmapFromWicBitmap(
+		converter.Get(),
+		ppBitmap
+	);
+	ThrowIfFailed(hr);
+
+	return S_OK;
+}
+
+HRESULT BitmapManager::Initialize(ID2D1HwndRenderTarget* pRT)
+{
+	if (pRT == nullptr)
+	{
+		return E_FAIL;
+	}
+
+	mpRenderTarget = pRT;
+
+	HRESULT hr = CoCreateInstance(
+		CLSID_WICImagingFactory,
+		nullptr,
+		CLSCTX_INPROC_SERVER,
+		IID_PPV_ARGS(mspWICFactory.GetAddressOf())
+	);
+	ThrowIfFailed(hr);
+
+	return hr;
+}
+
+void BitmapManager::Release()
+{
+	for (auto& e : mBitmaps)
+	{
+		e.second.Reset();
+	}
+	mBitmaps.clear();
+
+	mspWICFactory.Reset();
+}
+
+ID2D1Bitmap* BitmapManager::LoadBitmap(std::wstring filename)
+{
+	// 처음 부르면 생성
+	// 이미 있으면 기존을 돌려 줌
+    return nullptr;
+}

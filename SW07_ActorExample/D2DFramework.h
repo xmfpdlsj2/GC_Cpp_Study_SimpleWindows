@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <d2d1.h>
+#include <wincodec.h>
 #include <wrl/client.h>
 #include "ComException.h"
 
@@ -12,6 +13,7 @@ class D2DFramework
 protected:
 	HWND mHwnd{};
 
+	Microsoft::WRL::ComPtr<IWICImagingFactory> mspWICFactory{};
 	Microsoft::WRL::ComPtr<ID2D1Factory> mspD2DFactory{};
 	Microsoft::WRL::ComPtr<ID2D1HwndRenderTarget> mspRenderTarget{};
 
@@ -27,6 +29,21 @@ public:
 	virtual int GameLoop();
 
 	void ShowErrorMsg(LPCWSTR msg, HRESULT error = E_FAIL, LPCWSTR title = L"Error");
+
+public:
+	ID2D1HwndRenderTarget* GetRenderTarget() const
+	{
+		return mspRenderTarget.Get();
+	}
+
+	IWICImagingFactory* GetWICFactory() const
+	{
+		return mspWICFactory.Get();
+	}
+	ID2D1Factory* GetD2DFactory() const
+	{
+		return mspD2DFactory.Get();
+	}
 };
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
