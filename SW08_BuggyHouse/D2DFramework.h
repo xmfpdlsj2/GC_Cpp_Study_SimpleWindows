@@ -35,6 +35,10 @@ public:
 	{
 		return mspD2DFactory.Get();
 	}
+	HWND GetWindowHandle() const
+	{
+		return mHwnd;
+	}
 };
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

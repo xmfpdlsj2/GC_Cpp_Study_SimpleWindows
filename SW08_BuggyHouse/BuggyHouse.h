@@ -2,11 +2,12 @@
 #include <list>
 #include "D2DFramework.h"
 #include "Actor.h"
+#include "Bug.h"
 
-class ActorExample : public D2DFramework
+class BuggyHouse : public D2DFramework
 {
 	std::unique_ptr<Actor> mspBackground;
-	std::list<std::unique_ptr<Actor>> mBugs;
+	std::list<std::unique_ptr<Bug>> mBugs;
 
 public:
 	virtual void Initialize(

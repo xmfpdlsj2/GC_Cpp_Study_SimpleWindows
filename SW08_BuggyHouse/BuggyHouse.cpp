@@ -1,17 +1,18 @@
-#include "ActorExample.h"
+#include "BuggyHouse.h"
 
-void ActorExample::Initialize(HINSTANCE hInstance, LPCWSTR title, UINT width, UINT height)
+void BuggyHouse::Initialize(HINSTANCE hInstance, LPCWSTR title, UINT width, UINT height)
 {
 	D2DFramework::Initialize(hInstance, title, width, height);
 
-	mspBackground = std::make_unique<Actor>(this, L"Data/back1.png");
+	mspBackground = std::make_unique<Actor>(this, L"Data/back1_1024.png");
+
 	for (int i = 0; i < 100; i++)
 	{
-		mBugs.push_back(std::make_unique<Actor>(this, L"Data/01_ecco_1.png", i * 10, i % 5 * 60, 1.0f, 0.09f));
+		mBugs.push_back(std::make_unique<Bug>(this));
 	}
 }
 
-void ActorExample::Release()
+void BuggyHouse::Release()
 {
 	mBugs.clear();
 	mspBackground.reset();
@@ -19,7 +20,7 @@ void ActorExample::Release()
 	D2DFramework::Release();
 }
 
-void ActorExample::Render()
+void BuggyHouse::Render()
 {
 	HRESULT hr;
 

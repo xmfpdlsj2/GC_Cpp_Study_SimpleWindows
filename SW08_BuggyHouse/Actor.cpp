@@ -27,5 +27,6 @@ void Actor::Draw(float x, float y, float opacity, float scale)
 
 void Actor::Draw()
 {
+
 	Draw(mX, mY, mOpacity, mScale);
 }
