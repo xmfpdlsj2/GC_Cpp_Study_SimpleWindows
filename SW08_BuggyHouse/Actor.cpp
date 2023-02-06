@@ -5,28 +5,30 @@ Actor::Actor(D2DFramework* pFramework, std::wstring filename) :
 {
 }
 
-Actor::Actor(D2DFramework* pFramework, std::wstring filename, float x, float y, float opacity, float scale) :
-	mpFrameWork{ pFramework }, mX{ x }, mY{ y }, mOpacity{ opacity }, mScale{ scale }
+Actor::Actor(D2DFramework* pFramework, std::wstring filename, float x, float y, float scale, float opacity) :
+	mpFrameWork{ pFramework }, mX{ x }, mY{ y }, mOpacity{ opacity }
 {
-	mpBitmap = BitmapManager::Instance().LoadBitmap(filename);
+	mpBitmap = BitmapManager::Instance().LoadBitmaps(filename);
+
+	auto size = mpBitmap->GetPixelSize();
+	mWidth = size.width * scale;
+	mHeight = size.height * scale;
 }
 
 Actor::~Actor()
 {
 }
 
-void Actor::Draw(float x, float y, float opacity, float scale)
+void Actor::Draw(float x, float y, float opacity)
 {
 	auto pRenderTarget = mpFrameWork->GetRenderTarget();
-	auto size = mpBitmap->GetPixelSize();
 
-	D2D_RECT_F rect{ x, y, x + size.width * scale, y + size.height * scale };
+	D2D_RECT_F rect{ x, y, x + mWidth, y + mHeight};
 
 	pRenderTarget->DrawBitmap(mpBitmap, rect, opacity);
 }
 
 void Actor::Draw()
 {
-
-	Draw(mX, mY, mOpacity, mScale);
+	Draw(mX, mY, mOpacity);
 }

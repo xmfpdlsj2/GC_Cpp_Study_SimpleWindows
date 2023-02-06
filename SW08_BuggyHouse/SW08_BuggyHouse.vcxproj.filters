@@ -33,6 +33,12 @@
     <ClCompile Include="Bug.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Bug_ecco.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Bug_ladybug.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -51,6 +57,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Bug.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Bug_ecco.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Bug_ladybug.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
