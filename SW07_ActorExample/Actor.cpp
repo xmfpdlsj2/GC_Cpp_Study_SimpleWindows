@@ -8,7 +8,7 @@ Actor::Actor(D2DFramework* pFramework, std::wstring filename) :
 Actor::Actor(D2DFramework* pFramework, std::wstring filename, float x, float y, float opacity, float scale) :
 	mpFrameWork{ pFramework }, mX{ x }, mY{ y }, mOpacity{ opacity }, mScale{ scale }
 {
-	mpBitmap = BitmapManager::Instance().LoadBitmap(filename);
+	mpBitmap = BitmapManager::Instance().LoadBitmaps(filename);
 }
 
 Actor::~Actor()

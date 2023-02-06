@@ -138,7 +138,7 @@ void BitmapExample::DrawCircleToBuffer(int x, int y, int r, D2D1::ColorF color)
 
 	// 삼각수를 사용한 방식
 	int degree{ 360 };
-	float PI{ 3.141592 };
+	double PI{ 3.141592 };
 
 	for (int k = 0; k < degree; k++)
 	{

@@ -30,7 +30,7 @@ HRESULT BitmapManager::LoadWICBitmap(std::wstring filename, ID2D1Bitmap** ppBitm
 	hr = mspWICFactory->CreateFormatConverter(converter.GetAddressOf());
 	ThrowIfFailed(hr);
 
-	converter->Initialize(
+	hr = converter->Initialize(
 		frame.Get(),
 		GUID_WICPixelFormat32bppPBGRA,
 		WICBitmapDitherTypeNone,
@@ -81,7 +81,7 @@ void BitmapManager::Release()
 	mspWICFactory.Reset();
 }
 
-ID2D1Bitmap* BitmapManager::LoadBitmap(std::wstring filename)
+ID2D1Bitmap* BitmapManager::LoadBitmaps(std::wstring filename)
 {
 	// 방어 코드
 	if (mspWICFactory == nullptr)

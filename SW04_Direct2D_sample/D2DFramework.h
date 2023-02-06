@@ -10,7 +10,7 @@ class D2DFramework
 	const LPCWSTR gClassName{ L"MyWindowClass" };
 
 protected:
-	HWND mHwnd;
+	HWND mHwnd{};
 
 	Microsoft::WRL::ComPtr<ID2D1Factory> mspD2DFactory{};
 	Microsoft::WRL::ComPtr<ID2D1HwndRenderTarget> mspRenderTarget{};

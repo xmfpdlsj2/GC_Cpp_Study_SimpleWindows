@@ -32,6 +32,6 @@ public:
 	HRESULT Initialize(ID2D1HwndRenderTarget* pRT);
 	void Release();
 
-	ID2D1Bitmap* LoadBitmap(std::wstring filename);
+	ID2D1Bitmap* LoadBitmaps(std::wstring filename);
 };
 

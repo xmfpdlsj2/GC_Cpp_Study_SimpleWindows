@@ -21,4 +21,6 @@ int WINAPI WinMain(
 	{
 		OutputDebugStringA(e.what());
 	}
+
+	return 0;
 }

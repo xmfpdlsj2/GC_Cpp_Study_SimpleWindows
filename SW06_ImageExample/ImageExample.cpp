@@ -7,9 +7,11 @@
 
 void ImageExample::Initialize(HINSTANCE hInstance, LPCWSTR title, UINT width, UINT height)
 {
-	CoInitialize(nullptr);
+	HRESULT hr;
+	hr = CoInitialize(nullptr);
+	ThrowIfFailed(hr);
 
-	HRESULT hr = CoCreateInstance(
+	hr = CoCreateInstance(
 		CLSID_WICImagingFactory,
 		nullptr,
 		CLSCTX_INPROC_SERVER,
