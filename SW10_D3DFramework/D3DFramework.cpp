@@ -16,7 +16,7 @@ void D3DFramework::InitWindow(HINSTANCE hInstance)
 	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 	wc.lpfnWndProc = WindowProc;
 	wc.cbSize = sizeof(WNDCLASSEX);
-
+	
 	if (!RegisterClassEx(&wc))
 	{
 		MessageBox(nullptr, L"Failed To Register WindowClass!", L"Error", MB_OK);
@@ -121,16 +121,14 @@ void D3DFramework::OnResize()
 	);
 	mspDevice->CreateTexture2D(&td, nullptr, mspDepthStencil.ReleaseAndGetAddressOf());
 
-	CD3D11_DEPTH_STENCIL_VIEW_DESC dsvd(
-		D3D11_DSV_DIMENSION_TEXTURE2D,
-		DXGI_FORMAT_UNKNOWN,
-		1
-	);
+	CD3D11_DEPTH_STENCIL_VIEW_DESC dsvd(D3D11_DSV_DIMENSION_TEXTURE2D);
 	mspDevice->CreateDepthStencilView(
 		mspDepthStencil.Get(),
 		&dsvd,
 		mspDepthStencilView.ReleaseAndGetAddressOf()
 	);
+
+	mspDeviceContext->OMSetRenderTargets(1, mspRenderTargetView.GetAddressOf(), mspDepthStencilView.Get());
 }
 
 void D3DFramework::DestroyD3D()
@@ -161,7 +159,7 @@ void D3DFramework::RenderFrame()
 
 	Render();
 
-	mspSwapChain->Present(0, 0);
+	HRESULT hr = mspSwapChain->Present(0, 0);
 }
 
 void D3DFramework::Initialize(HINSTANCE hInstance, int width, int height)

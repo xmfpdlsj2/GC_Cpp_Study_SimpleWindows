@@ -31,7 +31,6 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> mspRenderTarget{};
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> mspDepthStencil{};
-
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mspRenderTargetView{};
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mspDepthStencilView{};
 
