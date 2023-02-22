@@ -4,7 +4,7 @@ Bug_ladybug::Bug_ladybug(D2DFramework* pFramework) : Bug(pFramework, L"Data/BH_B
 {
 	GetClientRect(pFramework->GetWindowHandle(), &mTurnPoint);
 	mIsTurn = false;
-	mSpeed = 2 + (rand() % 2);
+	mSpeed = static_cast<float>(2 + (rand() % 2));
 }
 
 void Bug_ladybug::Draw()
