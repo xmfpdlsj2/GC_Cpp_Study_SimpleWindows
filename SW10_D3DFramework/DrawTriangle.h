@@ -7,13 +7,17 @@ class DrawTriangle : public D3DFramework
 	struct VERTEX
 	{
 		FLOAT x, y, z;
-		FLOAT Color[4];
+		FLOAT u, v;
 	};
 	
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> mspInputLayout;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mspVertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> mspVertexShader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> mspPixelShader;
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> mspTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mspTextureView;
+
 
 protected:
 	void Render() override;
@@ -25,5 +29,7 @@ public:
 private:
 	void InitTriangle();
 	void InitPipeline();
+
+	HRESULT CreateTextureFromBMP();
 };
 
