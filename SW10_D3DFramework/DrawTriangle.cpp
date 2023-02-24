@@ -14,6 +14,8 @@ void DrawTriangle::Initialize(HINSTANCE hInstance, int width, int height)
 
 void DrawTriangle::Destroy()
 {
+	mspBlendState.Reset();
+	mspSamplerState.Reset();
 	mspTextureView.Reset();
 	mspTexture.Reset();
 	mspInputLayout.Reset();
@@ -77,7 +79,7 @@ void DrawTriangle::InitPipeline()
 	D3D11_INPUT_ELEMENT_DESC ied[]
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } ,
-		{ "TEXCOORD0", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	mspDevice->CreateInputLayout(ied, 2,
@@ -86,6 +88,35 @@ void DrawTriangle::InitPipeline()
 	);
 
 	mspDeviceContext->IASetInputLayout(mspInputLayout.Get());
+
+	float border[4]{ 1.0f, 1.0f, 1.0f, 1.0f };
+	CD3D11_SAMPLER_DESC sd(
+		D3D11_FILTER_MIN_MAG_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		0.0f,
+		1,
+		D3D11_COMPARISON_ALWAYS,
+		border,
+		0,
+		1
+	);
+	mspDevice->CreateSamplerState(&sd, mspSamplerState.ReleaseAndGetAddressOf());
+
+	D3D11_BLEND_DESC bd;
+	ZeroMemory(&bd, sizeof(D3D11_BLEND_DESC));
+	bd.RenderTarget[0].BlendEnable = true;
+
+	bd.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	bd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC1_ALPHA;
+	bd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	bd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	bd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	bd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	mspDevice->CreateBlendState(&bd, mspBlendState.ReleaseAndGetAddressOf());
 }
 
 HRESULT DrawTriangle::CreateTextureFromBMP()
@@ -114,15 +145,63 @@ HRESULT DrawTriangle::CreateTextureFromBMP()
 	file.seekg(bmh.bfOffBits);
 	// 5. ºñÆ®¸Ê ÀÐ±â
 	int pitch = bmi.biWidth * (bmi.biBitCount / 8);
-	for (int y = bmi.biHeight - 1; y >= 0; --y)
+	int index{};
+	char r{}, g{}, b{}, a{};
+	for (int y{ bmi.biHeight - 1 }; y >= 0; --y)
 	{
-		file.read(&pPixels[y * pitch], pitch);
+		index = y * pitch;
+		for (int x{ 0 }; x < bmi.biWidth; ++x)
+		{
+			file.read(&b, 1);
+			file.read(&g, 1);
+			file.read(&r, 1);
+			file.read(&a, 1);
+
+			if (static_cast<unsigned char>(r) == 30 &&
+				static_cast<unsigned char>(g) == 199 &&
+				static_cast<unsigned char>(b) == 250)
+			{
+				pPixels[index] = 0;
+				pPixels[index + 1] = 0;
+				pPixels[index + 2] = 0;
+				pPixels[index + 3] = 0;
+			}
+			else
+			{
+				pPixels[index] = b;
+				pPixels[index + 1] = g;
+				pPixels[index + 2] = r;
+				pPixels[index + 3] = a;
+			}
+
+			index += 4;
+		}
 	}
 
 	file.close();
 
 	// ÇÈ¼¿ µ¥ÀÌÅÍ -> Texture
+	CD3D11_TEXTURE2D_DESC td(
+		DXGI_FORMAT_B8G8R8A8_UNORM,
+		bmi.biWidth,
+		bmi.biHeight,
+		1,
+		1
+	);
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = &pPixels[0];
+	initData.SysMemPitch = pitch;
+	initData.SysMemSlicePitch = 0;
 
+	mspDevice->CreateTexture2D(&td, &initData, mspTexture.ReleaseAndGetAddressOf());
+
+	CD3D11_SHADER_RESOURCE_VIEW_DESC srvd(
+		D3D11_SRV_DIMENSION_TEXTURE2D,
+		td.Format,
+		0,
+		1
+	);
+	mspDevice->CreateShaderResourceView(mspTexture.Get(), &srvd, mspTextureView.ReleaseAndGetAddressOf());
 	return S_OK;
 }
 
@@ -136,5 +215,9 @@ void DrawTriangle::Render()
 	);
 
 	mspDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	mspDeviceContext->PSSetShaderResources(0, 1, mspTextureView.GetAddressOf());
+	mspDeviceContext->PSSetSamplers(0, 1, mspSamplerState.GetAddressOf());
+	mspDeviceContext->OMSetBlendState(mspBlendState.Get(), nullptr, 0xffffffff);
 	mspDeviceContext->Draw(4, 0);
 }
