@@ -6,8 +6,8 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <string>
-
-
+#include "Timer.h"
+#include "Input.h"
 
 class D3DFramework
 {
@@ -24,6 +24,11 @@ protected:
 	bool mMinimized{ false };
 	bool mMaximized{ false };
 	bool mResizing{ false };
+	bool mPaused{ false };
+
+	std::wstring mTitleText{};
+	MyUtil::Timer mTimer;
+	MyUtil::Input mInput;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> mspDevice{};
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mspDeviceContext{};
@@ -37,12 +42,14 @@ protected:
 private:
 	void InitWindow(HINSTANCE hInstance);
 	void InitD3D();
+	void CalculateFPS();
 
 protected:
 	void OnResize();
 	void DestroyD3D();
 	void RenderFrame();
 	virtual void Render() {};
+	virtual void Update(float delta) {};
 
 
 public:

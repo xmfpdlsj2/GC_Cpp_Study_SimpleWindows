@@ -30,10 +30,10 @@ void DrawTriangle::InitTriangle()
 {
 	VERTEX vertices[]
 	{
-		{-0.45f, -0.5f, 0.0f, 0.0f, 1.0f},
 		{-0.45f, 0.5f, 0.0f, 0.0f, 0.0f},
-		{0.45f, -0.5f, 0.0f, 1.0f, 1.0f},
 		{0.45f, 0.5f, 0.0f, 1.0f, 0.0f},
+		{-0.45f, -0.5f, 0.0f, 0.0f, 1.0f},
+		{0.45f, -0.5f, 0.0f, 1.0f, 1.0f},
 	};
 	CD3D11_BUFFER_DESC bd(
 		sizeof(vertices),
@@ -89,7 +89,7 @@ void DrawTriangle::InitPipeline()
 
 	mspDeviceContext->IASetInputLayout(mspInputLayout.Get());
 
-	float border[4]{ 1.0f, 1.0f, 1.0f, 1.0f };
+	float border[4]{ 0.0f, 0.0f, 0.0f, 0.0f };
 	CD3D11_SAMPLER_DESC sd(
 		D3D11_FILTER_MIN_MAG_MIP_POINT,
 		D3D11_TEXTURE_ADDRESS_WRAP,
@@ -220,4 +220,12 @@ void DrawTriangle::Render()
 	mspDeviceContext->PSSetSamplers(0, 1, mspSamplerState.GetAddressOf());
 	mspDeviceContext->OMSetBlendState(mspBlendState.Get(), nullptr, 0xffffffff);
 	mspDeviceContext->Draw(4, 0);
+}
+
+void DrawTriangle::Update(float delta)
+{
+	if (mInput.IsKeyDown(VK_SPACE))
+	{
+		OutputDebugString(L"SPACE\n");
+	}
 }

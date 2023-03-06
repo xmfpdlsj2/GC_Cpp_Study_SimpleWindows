@@ -23,6 +23,7 @@ class DrawTriangle : public D3DFramework
 
 protected:
 	void Render() override;
+	void Update(float delta) override;
 
 public:
 	void Initialize(HINSTANCE hInstance, int width = 800, int height = 600) override;
